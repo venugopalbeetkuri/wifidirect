@@ -19,6 +19,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +41,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private Button discover;
+    private EditText edt;
 
     // private Button server;
 
@@ -57,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private DataServerAsyncTask mDataTask;
 
     private Utils utils;
+    String message = "hello";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,10 +77,12 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
 
         discover = (Button) findViewById(R.id.bt_discover);
+        edt = (EditText)findViewById(R.id.sharemsg);
 
         // server = (Button) findViewById(R.id.bt_server);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        mRecyclerView = (RecyclerView) findViewById(
+                R.id.recyclerview);
         mAdapter = new MyAdapter(peersshow);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getApplicationContext()));
@@ -216,6 +222,8 @@ public class MainActivity extends AppCompatActivity {
                 //unregisterReceiver(mReceiver);
                 //registerReceiver(mReceiver, mFilter);
 
+                // get text value and assign to message string
+
                 mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
 
                     @Override
@@ -227,6 +235,12 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(int reason) {
+
+                        // popup[ for wifi
+
+
+
+
                         Toast.makeText(getBaseContext(), "Discovery peer failure. Reason: " + reason, Toast.LENGTH_SHORT).show();
                         Log.i("xyz", "Discovery peer failure. Reason: " + reason);
                     }
@@ -271,8 +285,9 @@ public class MainActivity extends AppCompatActivity {
         //if (null == config) {
             initCreateConnect(address);
         //}
+        String msg = edt.getText().toString();
+        sendData(msg);
 
-        sendData("Hi");
     }
 
     /**
@@ -357,7 +372,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "owner ip is " + hostAddress, Toast.LENGTH_SHORT).show();
 
             serviceIntent.putExtra(DataTransferService.EXTRAS_GROUP_OWNER_PORT, 8888);
-            msg = msg + count++;
+           // msg = msg + count++;
 
             serviceIntent.putExtra("msg", msg);
 
