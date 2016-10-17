@@ -3,7 +3,6 @@
 package com.bizzmark.wifidirect.Service;
 
 import android.app.IntentService;
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
@@ -19,7 +18,11 @@ import java.net.Socket;
  */
 public class DataTransferService extends IntentService {
 
-    private static final int SOCKET_TIMEOUT = 5000;
+
+
+
+
+    private static final int SOCKET_TIMEOUT = 50000;
     public static final String ACTION_SEND_DATA = "com.example.android.wifidirect.SEND_DATA";
     public static final String EXTRAS_GROUP_OWNER_ADDRESS = "group_owner_address";
     public static final String EXTRAS_GROUP_OWNER_PORT = "group_owner__port";
@@ -60,6 +63,7 @@ public class DataTransferService extends IntentService {
             Toast.makeText(getApplicationContext(), msg + " send to other device.", Toast.LENGTH_SHORT).show();
         } catch (Exception ex) {
 
+            closeSocket();
             Toast.makeText(getApplicationContext(), ex.getMessage() ,Toast.LENGTH_SHORT).show();
         } finally {
 

@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MyWifiDerect.iml" filepath="$PROJECT_DIR$/MyWifiDerect.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wifidirect_f.iml" filepath="$PROJECT_DIR$/wifidirect_f.iml" />
     </modules>
   </component>
 </project>

@@ -1,9 +1,10 @@
 package com.bizzmark.wifidirect.Activity;
 
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-
+import android.net.wifi.WifiManager;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
@@ -25,13 +26,10 @@ import android.widget.Toast;
 
 import com.bizzmark.wifidirect.Adapter.MyAdapter;
 import com.bizzmark.wifidirect.BroadcastReceiver.WifiDirectBroadcastReceiver;
-
 import com.bizzmark.wifidirect.R;
-import com.bizzmark.wifidirect.Service.ClientSocketFactory;
 import com.bizzmark.wifidirect.Service.DataTransferService;
 import com.bizzmark.wifidirect.Task.DataServerAsyncTask;
 import com.bizzmark.wifidirect.Utils.Utils;
-
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver mReceiver;
     private IntentFilter mFilter;
     private WifiP2pInfo info;
-
     private DataServerAsyncTask mDataTask;
 
     private Utils utils;
@@ -67,12 +64,18 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        wifiEnable();
         initView();
         initIntentFilter();
         initReceiver();
         initEvents();
     }
+
+    private void wifiEnable() {
+        WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(true);
+    }
+
 
     private void initView() {
 
@@ -138,8 +141,9 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void OnItemClick(View view, int position) {
 
-
-                        CreateConnect(peersshow.get(position).get("address"), peersshow.get(position).get("name"));
+                        if(peersshow.size() > 0) {
+                            CreateConnect(peersshow.get(position).get("address"), peersshow.get(position).get("name"));
+                        }
 
                     }
 
@@ -182,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-
+        wifiEnable();
         super.onResume();
         Log.i("xyz", "onResume");
         Toast.makeText(getBaseContext(),"onResume: ", Toast.LENGTH_SHORT).show();
@@ -191,7 +195,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onPause() {
-
         super.onPause();
         Log.i("xyz", "onPause");
         Toast.makeText(getBaseContext(),"onPause: ", Toast.LENGTH_SHORT).show();
@@ -202,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
 
         super.onDestroy();
-        unregisterReceiver(mReceiver);
+        //unregisterReceiver(mReceiver);
     }
 
     public void ResetReceiver() {
@@ -218,6 +221,10 @@ public class MainActivity extends AppCompatActivity {
         discover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+                peers.clear();
+                peersshow.clear();
 
                 //unregisterReceiver(mReceiver);
                 //registerReceiver(mReceiver, mFilter);
@@ -318,8 +325,11 @@ public class MainActivity extends AppCompatActivity {
                 public void onFailure(int reason) {
 
                     Log.i("xyz", "P2P Connection failure: Reason: " + reason);
-                    Toast.makeText(getBaseContext(),"P2P Connection failure: Reason: " + reason, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(),"P2P Connection failure: Reason:" + reason,Toast.LENGTH_SHORT).show();
                     config = null;
+                    if(reason==1){
+                      Toast.makeText(getApplicationContext(),"my reason srinu",Toast.LENGTH_LONG).show();
+                    }
                 }
             });
         } catch(Exception ex) {

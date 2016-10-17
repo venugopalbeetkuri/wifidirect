@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.bizzmark.wifidirect.Activity.MainActivity;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -22,6 +23,9 @@ public class DataServerAsyncTask extends
 
     private TextView statusText;
     private MainActivity activity;
+
+    static ServerSocket serverSocket = null;
+    Socket client = null;
 
     /**
      * @param statusText
@@ -37,11 +41,17 @@ public class DataServerAsyncTask extends
 
         try {
 
-             Log.i("xyz", "Server socket initialized.");
-            ServerSocket serverSocket = new ServerSocket(8888);
+            if(null == serverSocket) {
+                Log.i("xyz", "Server socket initialized.");
+                serverSocket = new ServerSocket(8888);
+            }
 
+
+            if(null == client){
+                client = serverSocket.accept();
+            }
             // Log.i("xyz","");
-            Socket client = serverSocket.accept();
+
              // Log.i("xyz","");
 
             Log.i("xyz","Client connected.");
@@ -53,12 +63,27 @@ public class DataServerAsyncTask extends
             }
 
             String str = baos.toString();
-            serverSocket.close();
+
+
+
             return str;
 
         } catch (Throwable e) {
+
+            try {
+                serverSocket.close();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
             Log.e("xyz", e.toString());
             return null;
+        } finally {
+            try {
+                client.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            client = null;
         }
     }
 
